@@ -20,12 +20,12 @@ router.post('/', async (req, res) => {
 			.json({ message: 'Please enter a description for the action' });
 		return;
 	}
-	const newProject = {
+	const newAction = {
 		...req.body,
 		project_id: req.projectId,
 	};
 	try {
-		const action = await Actions.addAction(newProject);
+		const action = await Actions.addAction(newAction);
 		res.status(201).json(action);
 	} catch (err) {
 		console.log(err);

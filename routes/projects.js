@@ -31,6 +31,31 @@ router.post('/', async (req, res) => {
 	}
 });
 
+router.get('/:projectId', async (req, res) => {
+	try {
+		const project = await Projects.getProjectById(req.params.projectId);
+		if (project.length > 0) {
+			const { id, name, description, completed } = project[0];
+			const actions = project.map(action => {
+				return {
+					id: action.actionId,
+					description: action.actionDesc,
+					notes: action.actionNotes,
+					completed: action.actionComp,
+				};
+			});
+			res.status(200).json({ id, name, description, completed, actions });
+		} else {
+			res.status(404).json({ message: 'No project found with that ID' });
+		}
+	} catch (err) {
+		console.log(err);
+		res
+			.status(500)
+			.json({ message: 'Server error retrieving project information' });
+	}
+});
+
 router.use(
 	'/:projectId/actions',
 	(req, res, next) => {
