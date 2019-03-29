@@ -35,13 +35,16 @@ router.get('/:projectId', async (req, res) => {
 	try {
 		const project = await Projects.getProjectById(req.params.projectId);
 		if (project.length > 0) {
-			const { id, name, description, completed } = project[0];
+			let { id, name, description, completed } = project[0];
+			completed = !!+completed;
 			const actions = project.map(action => {
 				return {
 					id: action.actionId,
 					description: action.actionDesc,
-					notes: action.actionNotes,
-					completed: action.actionComp,
+					notes: action.actionNotes
+						? action.actionNotes
+						: 'No notes for this action',
+					completed: !!+action.actionComp,
 				};
 			});
 			res.status(200).json({ id, name, description, completed, actions });
